@@ -1,10 +1,17 @@
 // Configuration Types
+export interface MatchingConfig {
+  caseSensitive: boolean; // case sensitive matching, default false
+  removeSpecialChars: boolean; // remove special characters, default true
+  normalizeWhitespace: boolean; // normalize whitespace, default true
+}
+
 export interface AppConfig {
   spotifyClientId: string;
   spotifyClientSecret: string;
   redirectUri: string;
   timeoutMs: number;
   baseMusicFolder: string;
+  matching: MatchingConfig;
 }
 
 // Playlist Mapping Types

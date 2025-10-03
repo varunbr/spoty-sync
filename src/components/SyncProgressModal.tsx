@@ -165,9 +165,8 @@ const SyncProgressModal: React.FC<SyncProgressModalProps> = ({
                           <div className="flex justify-between items-start">
                             <div className="flex-1">
                               <p className="font-medium text-gray-800">
-                                {track.spotifyTrack.artists.map(a => a.name).join(', ')} - {track.spotifyTrack.name}
+                                {track.spotifyTrack.name}
                               </p>
-                              <p className="text-sm text-gray-600">From: {result.playlistName}</p>
                               {track.expectedFilename && (
                                 <p className="text-xs text-gray-500 mt-1">
                                   Expected: <code className="bg-gray-200 px-1 rounded text-xs">{track.expectedFilename}</code>

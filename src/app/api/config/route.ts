@@ -1,16 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { promises as fs } from 'fs';
 import path from 'path';
-import { AppConfig, ValidationError } from '@/types';
+import { AppConfig, ValidationError, MatchingConfig } from '@/types';
 
 const CONFIG_FILE_PATH = path.join(process.cwd(), 'data', 'config.json');
+
+const DEFAULT_MATCHING_CONFIG: MatchingConfig = {
+  caseSensitive: false,
+  removeSpecialChars: true,
+  normalizeWhitespace: true
+};
 
 const DEFAULT_CONFIG: AppConfig = {
   spotifyClientId: '',
   spotifyClientSecret: '',
   redirectUri: 'http://127.0.0.1:3000/callback',
   timeoutMs: 60000,
-  baseMusicFolder: ''
+  baseMusicFolder: '',
+  matching: DEFAULT_MATCHING_CONFIG
 };
 
 export async function GET() {
@@ -21,7 +28,12 @@ export async function GET() {
     
     try {
       const configData = await fs.readFile(CONFIG_FILE_PATH, 'utf8');
-      config = { ...DEFAULT_CONFIG, ...JSON.parse(configData) };
+      const loadedConfig = JSON.parse(configData);
+      config = { 
+        ...DEFAULT_CONFIG, 
+        ...loadedConfig,
+        matching: { ...DEFAULT_MATCHING_CONFIG, ...loadedConfig.matching }
+      };
     } catch (error) {
       // Config file doesn't exist or is invalid, return default
       config = DEFAULT_CONFIG;

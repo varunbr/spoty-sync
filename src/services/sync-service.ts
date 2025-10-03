@@ -1,4 +1,4 @@
-import { PlaylistMapping, SyncResult } from '@/types';
+import { PlaylistMapping, SyncResult, MatchingConfig } from '@/types';
 
 class SyncService {
   /**
@@ -8,6 +8,7 @@ class SyncService {
     mapping: PlaylistMapping,
     accessToken: string,
     baseMusicFolder: string,
+    matchingConfig?: MatchingConfig,
     onProgress?: (step: string, progress: number) => void
   ): Promise<SyncResult> {
     try {
@@ -22,7 +23,8 @@ class SyncService {
           playlistId: mapping.spotifyPlaylistId,
           accessToken,
           mapping,
-          baseMusicFolder
+          baseMusicFolder,
+          matchingConfig
         }),
       });
 
@@ -48,6 +50,7 @@ class SyncService {
     mappings: PlaylistMapping[],
     accessToken: string,
     baseMusicFolder: string,
+    matchingConfig?: MatchingConfig,
     onProgress?: (current: number, total: number, currentPlaylist: string) => void
   ): Promise<SyncResult[]> {
     const results: SyncResult[] = [];
@@ -60,7 +63,7 @@ class SyncService {
       }
 
       try {
-        const result = await this.syncPlaylist(mapping, accessToken, baseMusicFolder);
+        const result = await this.syncPlaylist(mapping, accessToken, baseMusicFolder, matchingConfig);
         results.push(result);
       } catch (error) {
         console.error(`Failed to sync ${mapping.spotifyPlaylistName}:`, error);

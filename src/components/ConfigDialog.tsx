@@ -22,7 +22,12 @@ const ConfigDialog: React.FC<ConfigDialogProps> = ({
     spotifyClientSecret: '',
     redirectUri: 'http://127.0.0.1:3000/callback',
     timeoutMs: 60000,
-    baseMusicFolder: ''
+    baseMusicFolder: '',
+    matching: {
+      caseSensitive: false,
+      removeSpecialChars: true,
+      normalizeWhitespace: true
+    }
   });
   
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -235,6 +240,65 @@ const ConfigDialog: React.FC<ConfigDialogProps> = ({
           <p className="mt-1 text-sm text-gray-500">
             Timeout for API requests (1000-300000 ms)
           </p>
+        </div>
+
+        {/* Matching Configuration */}
+        <div className="border-t pt-6">
+          <h3 className="text-lg font-medium text-gray-900 mb-4">Track Matching Settings</h3>
+          
+          <div className="space-y-3">
+            {/* Case Sensitive */}
+            <label className="flex items-center">
+              <input
+                type="checkbox"
+                checked={formData.matching.caseSensitive}
+                onChange={(e) => setFormData(prev => ({
+                  ...prev,
+                  matching: { ...prev.matching, caseSensitive: e.target.checked }
+                }))}
+                className="rounded border-gray-300"
+              />
+              <span className="ml-2 text-sm text-gray-900">Case sensitive matching</span>
+              <span className="ml-2 text-xs text-gray-500">(recommended: OFF for better matches)</span>
+            </label>
+
+            {/* Remove Special Characters */}
+            <label className="flex items-center">
+              <input
+                type="checkbox"
+                checked={formData.matching.removeSpecialChars}
+                onChange={(e) => setFormData(prev => ({
+                  ...prev,
+                  matching: { ...prev.matching, removeSpecialChars: e.target.checked }
+                }))}
+                className="rounded border-gray-300"
+              />
+              <span className="ml-2 text-sm text-gray-900">Remove special characters</span>
+              <span className="ml-2 text-xs text-gray-500">(recommended: ON to ignore punctuation)</span>
+            </label>
+
+            {/* Normalize Whitespace */}
+            <label className="flex items-center">
+              <input
+                type="checkbox"
+                checked={formData.matching.normalizeWhitespace}
+                onChange={(e) => setFormData(prev => ({
+                  ...prev,
+                  matching: { ...prev.matching, normalizeWhitespace: e.target.checked }
+                }))}
+                className="rounded border-gray-300"
+              />
+              <span className="ml-2 text-sm text-gray-900">Normalize whitespace</span>
+              <span className="ml-2 text-xs text-gray-500">(recommended: ON to clean up spacing)</span>
+            </label>
+          </div>
+          
+          <div className="mt-4 p-3 bg-blue-50 rounded-lg">
+            <p className="text-sm text-blue-700">
+              <strong>Simple matching:</strong> Files are matched using exact string comparison after normalization. 
+              This ensures reliable, predictable results without complex scoring algorithms.
+            </p>
+          </div>
         </div>
       </div>
 

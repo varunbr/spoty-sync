@@ -235,6 +235,7 @@ const SpotifySync: React.FC = () => {
         mappings,
         authState.accessToken,
         config.baseMusicFolder,
+        config.matching,
         (current, total, playlistName) => {
           setSyncProgress({
             isProcessing: true,
@@ -282,6 +283,7 @@ const SpotifySync: React.FC = () => {
         mapping,
         authState.accessToken,
         config.baseMusicFolder,
+        config.matching,
         (step, progress) => {
           setSyncProgress({
             isProcessing: true,
