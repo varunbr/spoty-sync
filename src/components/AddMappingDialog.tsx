@@ -101,10 +101,15 @@ const AddMappingDialog: React.FC<AddMappingDialogProps> = ({
       setIsLoading(true);
       setError(null);
       const results = await spotifyAPI.searchPlaylists(searchQuery);
+      
+      if (results.length === 0) {
+        setError('No playlist found. Please enter a valid Spotify playlist URL (e.g., https://open.spotify.com/playlist/...)');
+      }
+      
       setSearchResults(results);
     } catch (error) {
       console.error('Failed to search playlists:', error);
-      setError('Failed to search playlists. Please try again.');
+      setError('Failed to fetch playlist. Please check that the URL is correct and you have access to the playlist.');
     } finally {
       setIsLoading(false);
     }
@@ -176,12 +181,12 @@ const AddMappingDialog: React.FC<AddMappingDialogProps> = ({
   const renderPlaylistStep = () => (
     <div className="space-y-6">
       <div>
-        <Label htmlFor="search">Search Playlists</Label>
+        <Label htmlFor="search">Enter Spotify Playlist URL</Label>
         <div className="flex space-x-2 mt-1">
           <Input
             id="search"
             type="text"
-            placeholder="Search by name or paste Spotify URL..."
+            placeholder="Paste Spotify playlist URL..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             onKeyPress={(e) => e.key === 'Enter' && searchPlaylists()}
@@ -190,6 +195,9 @@ const AddMappingDialog: React.FC<AddMappingDialogProps> = ({
             <Search className="h-4 w-4" />
           </Button>
         </div>
+        <p className="text-xs text-gray-500 mt-1">
+          Example: https://open.spotify.com/playlist/37i9dQZF1DX0XUsuxWHRQd
+        </p>
       </div>
 
       {/* Search Results */}

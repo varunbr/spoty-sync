@@ -141,7 +141,7 @@ class SpotifyAPI {
   }
 
   /**
-   * Searches for playlists by name or URL
+   * Searches for playlists by URL or URI only
    */
   async searchPlaylists(query: string): Promise<SpotifyPlaylist[]> {
     try {
@@ -152,12 +152,8 @@ class SpotifyAPI {
         return [playlist];
       }
 
-      // Search by name
-      const response = await this.makeRequest<{
-        playlists: SpotifyPaginatedResponse<SpotifyPlaylist>;
-      }>(`/search?q=${encodeURIComponent(query)}&type=playlist&limit=20`);
-
-      return response.playlists.items;
+      // If no valid playlist URL/URI provided, return empty results
+      return [];
     } catch (error) {
       console.error('Error searching playlists:', error);
       throw error;
@@ -175,7 +171,8 @@ class SpotifyAPI {
     }
 
     // Spotify URL: https://open.spotify.com/playlist/37i9dQZF1DX0XUsuxWHRQd
-    const urlMatch = input.match(/spotify\.com\/playlist\/([a-zA-Z0-9]+)/);
+    // Updated regex to handle query parameters and fragments
+    const urlMatch = input.match(/spotify\.com\/playlist\/([a-zA-Z0-9]+)(?:\?.*)?(?:#.*)?$/);
     if (urlMatch) {
       return urlMatch[1];
     }
