@@ -22,9 +22,9 @@ export function Modal({ isOpen, onClose, title, children, maxWidth = 'max-w-2xl'
       />
       
       {/* Modal */}
-      <div className={`relative bg-white rounded-lg shadow-xl ${maxWidth} w-full mx-4 max-h-[90vh] overflow-hidden`}>
+      <div className={`relative bg-white ${maxWidth.includes('7xl') ? 'rounded-lg m-4 h-[96vh]' : 'rounded-lg shadow-xl mx-4 max-h-[90vh]'} ${maxWidth} w-full flex flex-col overflow-hidden`}>        
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b">
+        <div className="flex items-center justify-between p-6 border-b bg-white flex-shrink-0">
           <h2 className="text-lg font-semibold">{title}</h2>
           <Button
             variant="ghost"
@@ -35,8 +35,8 @@ export function Modal({ isOpen, onClose, title, children, maxWidth = 'max-w-2xl'
           </Button>
         </div>
         
-        {/* Content */}
-        <div className="p-6 overflow-y-auto max-h-[calc(90vh-120px)]">
+        {/* Scrollable Content */}
+        <div className="flex-1 overflow-y-auto p-6">
           {children}
         </div>
       </div>

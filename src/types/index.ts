@@ -126,6 +126,7 @@ export interface SyncResult {
   playlistName: string;
   totalTracks: number;
   matchedTracks: number;
+  matchedTracksList: LocalTrackMatch[];
   unmatchedTracks: LocalTrackMatch[];
   m3uFilePath: string;
   syncedAt: Date;

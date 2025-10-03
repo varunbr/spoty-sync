@@ -101,12 +101,16 @@ export async function POST(request: NextRequest) {
     }
 
     // Create sync result
+    const matchedTracksList = matches.filter(m => m.isMatched);
+    const unmatchedTracksList = matches.filter(m => !m.isMatched);
+    
     const syncResult: SyncResult = {
       playlistId,
       playlistName: mapping.spotifyPlaylistName,
       totalTracks: allTracks.length,
-      matchedTracks: matches.filter(m => m.isMatched).length,
-      unmatchedTracks: matches.filter(m => !m.isMatched),
+      matchedTracks: matchedTracksList.length,
+      matchedTracksList,
+      unmatchedTracks: unmatchedTracksList,
       m3uFilePath,
       syncedAt: new Date()
     };

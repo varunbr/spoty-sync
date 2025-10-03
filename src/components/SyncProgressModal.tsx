@@ -35,7 +35,7 @@ const SyncProgressModal: React.FC<SyncProgressModalProps> = ({
       isOpen={isOpen}
       onClose={onClose}
       title={isProcessing ? 'Syncing Playlists...' : 'Sync Complete'}
-      maxWidth="max-w-3xl"
+      maxWidth="max-w-7xl"
     >
       <div className="space-y-6">
         {isProcessing ? (
@@ -82,115 +82,132 @@ const SyncProgressModal: React.FC<SyncProgressModalProps> = ({
               </div>
             </div>
 
-            {/* Detailed Results */}
-            <div className="space-y-4">
-              <h4 className="font-medium text-gray-900">Sync Details</h4>
-              <div className="max-h-64 overflow-y-auto space-y-3">
-                {results.map((result) => {
-                  const playlistMatchRate = result.totalTracks > 0 ? 
-                    (result.matchedTracks / result.totalTracks) * 100 : 0;
-                  
-                  return (
-                    <div key={result.playlistId} className="border rounded-lg p-4">
-                      <div className="flex items-center justify-between mb-2">
-                        <h5 className="font-medium text-gray-900">{result.playlistName}</h5>
-                        <div className="flex items-center space-x-2">
-                          {playlistMatchRate >= 80 ? (
-                            <CheckCircle className="h-4 w-4 text-green-500" />
-                          ) : playlistMatchRate >= 50 ? (
-                            <AlertCircle className="h-4 w-4 text-yellow-500" />
-                          ) : (
-                            <AlertCircle className="h-4 w-4 text-red-500" />
-                          )}
-                          <span className="text-sm font-medium">
-                            {result.matchedTracks}/{result.totalTracks} ({Math.round(playlistMatchRate)}%)
-                          </span>
-                        </div>
-                      </div>
+            {/* Combined Sync Results */}
+            <div className="space-y-6">
+              <div className="grid gap-6">
+                {/* Playlist Overview */}
+                <div className="space-y-4">
+                  <h4 className="font-medium text-gray-900">Playlist Results Overview</h4>
+                  <div className="grid gap-3">
+                    {results.map((result, playlistIndex) => {
+                      const playlistMatchRate = result.totalTracks > 0 ? 
+                        (result.matchedTracks / result.totalTracks) * 100 : 0;
                       
-                      <div className="text-sm text-gray-500 space-y-1">
-                        <p>M3U File: {result.m3uFilePath}</p>
-                        <p>Synced: {result.syncedAt.toLocaleString()}</p>
-                        {result.unmatchedTracks.length > 0 && (
-                          <details className="mt-2">
-                            <summary className="cursor-pointer text-yellow-600 hover:text-yellow-700">
-                              {result.unmatchedTracks.length} tracks could not be matched (click to expand)
-                            </summary>
-                            <div className="mt-2 space-y-2 max-h-48 overflow-y-auto">
-                              {result.unmatchedTracks.map((track, index) => (
-                                <div key={index} className="border-l-2 border-yellow-400 pl-3 py-1 bg-yellow-50 rounded">
-                                  <p className="font-medium text-gray-800">
-                                    {track.spotifyTrack.artists.map(a => a.name).join(', ')} - {track.spotifyTrack.name}
-                                  </p>
-                                  {track.expectedFilename && (
-                                    <p className="text-xs text-gray-600">
-                                      Expected: <code className="bg-gray-200 px-1 rounded">{track.expectedFilename}</code>
-                                    </p>
-                                  )}
-                                  {track.spotifyUrl && (
-                                    <p className="text-xs">
-                                      <a 
-                                        href={track.spotifyUrl} 
-                                        target="_blank" 
-                                        rel="noopener noreferrer"
-                                        className="text-green-600 hover:text-green-800 underline"
-                                      >
-                                        🎵 Listen on Spotify
-                                      </a>
-                                    </p>
-                                  )}
-                                </div>
-                              ))}
-                            </div>
-                          </details>
-                        )}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* All Unmatched Tracks Summary */}
-            {unmatchedTracks > 0 && (
-              <div className="border-t pt-4">
-                <details>
-                  <summary className="cursor-pointer font-medium text-gray-900 hover:text-gray-700 mb-3">
-                    All Unmatched Tracks Summary ({unmatchedTracks} total)
-                  </summary>
-                  <div className="max-h-64 overflow-y-auto space-y-2">
-                    {results.flatMap(result => 
-                      result.unmatchedTracks.map((track, index) => (
-                        <div key={`${result.playlistId}-${index}`} className="border border-yellow-200 rounded-lg p-3 bg-yellow-50">
-                          <div className="flex justify-between items-start">
-                            <div className="flex-1">
-                              <p className="font-medium text-gray-800">
-                                {track.spotifyTrack.name}
-                              </p>
-                              {track.expectedFilename && (
-                                <p className="text-xs text-gray-500 mt-1">
-                                  Expected: <code className="bg-gray-200 px-1 rounded text-xs">{track.expectedFilename}</code>
-                                </p>
+                      return (
+                        <div key={result.playlistId} className="border rounded-lg p-4">
+                          <div className="flex items-center justify-between mb-2">
+                            <h5 className="font-medium text-gray-900">
+                              {playlistIndex + 1}. {result.playlistName}
+                            </h5>
+                            <div className="flex items-center space-x-2">
+                              {playlistMatchRate >= 80 ? (
+                                <CheckCircle className="h-4 w-4 text-green-500" />
+                              ) : playlistMatchRate >= 50 ? (
+                                <AlertCircle className="h-4 w-4 text-yellow-500" />
+                              ) : (
+                                <AlertCircle className="h-4 w-4 text-red-500" />
                               )}
+                              <span className="text-sm font-medium">
+                                {result.matchedTracks}/{result.totalTracks} ({Math.round(playlistMatchRate)}%)
+                              </span>
                             </div>
-                            {track.spotifyUrl && (
-                              <a 
-                                href={track.spotifyUrl} 
-                                target="_blank" 
-                                rel="noopener noreferrer"
-                                className="ml-3 text-green-600 hover:text-green-800 text-sm font-medium"
-                              >
-                                🎵 Spotify
-                              </a>
-                            )}
+                          </div>
+                          
+                          <div className="text-sm text-gray-500 space-y-1">
+                            <p>📁 M3U File: {result.m3uFilePath}</p>
+                            <p>🕒 Synced: {result.syncedAt.toLocaleString()}</p>
                           </div>
                         </div>
-                      ))
-                    )}
+                      );
+                    })}
                   </div>
-                </details>
+                </div>
+
+                {/* All Matched Tracks */}
+                {results.some(r => r.matchedTracks > 0) && (
+                  <div className="space-y-3">
+                    <details open className="bg-green-50 p-4 rounded-lg">
+                      <summary className="cursor-pointer text-green-700 hover:text-green-800 font-medium text-lg mb-3">
+                        ✅ All Matched Tracks ({results.reduce((sum, r) => sum + r.matchedTracks, 0)} total)
+                      </summary>
+                      <div className="space-y-3">
+                        {results.map((result, playlistIndex) => 
+                          result.matchedTracksList && result.matchedTracksList.length > 0 ? (
+                            <div key={result.playlistId} className="bg-white rounded p-3">
+                              <h6 className="font-medium text-green-800 mb-2">
+                                {playlistIndex + 1}. {result.playlistName} ({result.matchedTracks} matched)
+                              </h6>
+                              <div className="space-y-1 max-h-64 overflow-y-auto">
+                                {result.matchedTracksList.map((track, trackIndex) => (
+                                  <div key={trackIndex} className="border-l-2 border-green-400 pl-3 py-1 bg-green-100 rounded text-sm">
+                                    <p className="font-medium text-gray-800">
+                                      {trackIndex + 1}. {track.spotifyTrack.artists.map(a => a.name).join(', ')} - {track.spotifyTrack.name}
+                                    </p>
+                                    {track.localFilePath && (
+                                      <p className="text-xs text-green-600">
+                                        Found: <code className="bg-green-200 px-1 rounded">{track.localFilePath}</code>
+                                      </p>
+                                    )}
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          ) : null
+                        )}
+                      </div>
+                    </details>
+                  </div>
+                )}
+
+                {/* All Unmatched Tracks */}
+                {unmatchedTracks > 0 && (
+                  <div className="space-y-3">
+                    <details open className="bg-yellow-50 p-4 rounded-lg">
+                      <summary className="cursor-pointer text-yellow-700 hover:text-yellow-800 font-medium text-lg mb-3">
+                        ⚠️ All Unmatched Tracks ({unmatchedTracks} total)
+                      </summary>
+                      <div className="space-y-3">
+                        {results.map((result, playlistIndex) =>
+                          result.unmatchedTracks.length > 0 ? (
+                            <div key={result.playlistId} className="bg-white rounded p-3">
+                              <h6 className="font-medium text-yellow-800 mb-2">
+                                {playlistIndex + 1}. {result.playlistName} ({result.unmatchedTracks.length} unmatched)
+                              </h6>
+                              <div className="space-y-1 max-h-64 overflow-y-auto">
+                                {result.unmatchedTracks.map((track, trackIndex) => (
+                                  <div key={trackIndex} className="border-l-2 border-yellow-400 pl-3 py-1 bg-yellow-100 rounded text-sm">
+                                    <p className="font-medium text-gray-800">
+                                      {trackIndex + 1}. {track.spotifyTrack.artists.map(a => a.name).join(', ')} - {track.spotifyTrack.name}
+                                    </p>
+                                    {track.expectedFilename && (
+                                      <p className="text-xs text-gray-600">
+                                        Expected: <code className="bg-gray-200 px-1 rounded">{track.expectedFilename}</code>
+                                      </p>
+                                    )}
+                                    {track.spotifyUrl && (
+                                      <p className="text-xs">
+                                        <a 
+                                          href={track.spotifyUrl} 
+                                          target="_blank" 
+                                          rel="noopener noreferrer"
+                                          className="text-green-600 hover:text-green-800 underline"
+                                        >
+                                          🎵 Listen on Spotify
+                                        </a>
+                                      </p>
+                                    )}
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          ) : null
+                        )}
+                      </div>
+                    </details>
+                  </div>
+                )}
               </div>
-            )}
+            </div>
 
             {/* Actions */}
             <div className="flex justify-between">

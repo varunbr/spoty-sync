@@ -218,14 +218,15 @@ class FileMatchingService {
     matches: LocalTrackMatch[],
     m3uFilePath: string
   ): SyncResult {
-    const matchedTracks = matches.filter(m => m.isMatched);
+    const matchedTracksList = matches.filter(m => m.isMatched);
     const unmatchedTracks = matches.filter(m => !m.isMatched);
     
     return {
       playlistId,
       playlistName,
       totalTracks: matches.length,
-      matchedTracks: matchedTracks.length,
+      matchedTracks: matchedTracksList.length,
+      matchedTracksList,
       unmatchedTracks,
       m3uFilePath,
       syncedAt: new Date()

@@ -73,6 +73,7 @@ class SyncService {
           playlistName: mapping.spotifyPlaylistName,
           totalTracks: 0,
           matchedTracks: 0,
+          matchedTracksList: [],
           unmatchedTracks: [],
           m3uFilePath: '',
           syncedAt: new Date()
@@ -106,8 +107,10 @@ class SyncService {
         .success { color: #28a745; }
         .warning { color: #ffc107; }
         .error { color: #dc3545; }
-        .track-list { max-height: 200px; overflow-y: auto; }
-        .track { padding: 5px 0; border-bottom: 1px solid #eee; }
+        .track-list { max-height: 400px; overflow-y: auto; margin: 10px 0; }
+        .track { padding: 10px; border-bottom: 1px solid #eee; margin: 5px 0; border-radius: 4px; }
+        .playlist-section { margin-bottom: 20px; }
+        .serial-number { font-weight: bold; color: #666; margin-right: 5px; }
     </style>
 </head>
 <body>
@@ -139,36 +142,82 @@ class SyncService {
     </div>
 `;
 
-    results.forEach(result => {
-      const matchRate = result.totalTracks > 0 ? (result.matchedTracks / result.totalTracks) * 100 : 0;
-      const statusClass = matchRate >= 80 ? 'success' : matchRate >= 50 ? 'warning' : 'error';
-
-      html += `
-    <div class="playlist">
-        <div class="playlist-header">
-            <span class="${statusClass}">${result.playlistName}</span>
-            <span style="float: right;">${result.matchedTracks}/${result.totalTracks} tracks (${Math.round(matchRate)}%)</span>
-        </div>
-        <div class="playlist-content">
-            <p><strong>M3U File:</strong> ${result.m3uFilePath}</p>
-            <p><strong>Synced At:</strong> ${result.syncedAt.toLocaleString()}</p>
-            
-            ${result.unmatchedTracks.length > 0 ? `
-            <h4>Unmatched Tracks (${result.unmatchedTracks.length}):</h4>
-            <div class="track-list">
-                ${result.unmatchedTracks.map(track => `
-                <div class="track">
-                    <strong>${track.spotifyTrack.artists.map((a: any) => a.name).join(', ')} - ${track.spotifyTrack.name}</strong>
-                    <br><small style="color: #666;">Expected filename: ${track.expectedFilename || 'N/A'}</small>
-                    <br><small><a href="${track.spotifyUrl || '#'}" target="_blank" style="color: #1db954;">🎵 Listen on Spotify</a></small>
-                </div>
-                `).join('')}
+    // Playlist Overview
+    html += `
+    <div class="playlist-section">
+        <h2>Playlist Overview</h2>
+        ${results.map((result, index) => {
+          const matchRate = result.totalTracks > 0 ? (result.matchedTracks / result.totalTracks) * 100 : 0;
+          const statusClass = matchRate >= 80 ? 'success' : matchRate >= 50 ? 'warning' : 'error';
+          return `
+        <div class="playlist">
+            <div class="playlist-header">
+                <span class="${statusClass}"><span class="serial-number">${index + 1}.</span>${result.playlistName}</span>
+                <span style="float: right;">${result.matchedTracks}/${result.totalTracks} tracks (${Math.round(matchRate)}%)</span>
             </div>
-            ` : '<p class="success">All tracks matched! 🎉</p>'}
+            <div class="playlist-content">
+                <p><strong>M3U File:</strong> ${result.m3uFilePath}</p>
+                <p><strong>Synced At:</strong> ${result.syncedAt.toLocaleString()}</p>
+            </div>
+        </div>`;
+        }).join('')}
+    </div>`;
+
+    // All Matched Tracks Section
+    const allMatchedTracks = results.filter(r => r.matchedTracks > 0);
+    if (allMatchedTracks.length > 0) {
+      html += `
+    <div class="playlist-section">
+        <h2 class="success">✅ All Matched Tracks (${results.reduce((sum, r) => sum + r.matchedTracks, 0)} total)</h2>
+        ${allMatchedTracks.map((result, playlistIndex) => `
+        <div class="playlist">
+            <div class="playlist-header success">
+                <span class="serial-number">${playlistIndex + 1}.</span>${result.playlistName} (${result.matchedTracks} matched)
+            </div>
+            <div class="playlist-content">
+                <div class="track-list">
+                    ${(result.matchedTracksList || []).map((track, trackIndex) => `
+                    <div class="track" style="background: #f0f9f0; border-left: 3px solid #28a745;">
+                        <span class="serial-number">${trackIndex + 1}.</span>
+                        <strong>${track.spotifyTrack.artists.map((a: any) => a.name).join(', ')} - ${track.spotifyTrack.name}</strong>
+                        <br><small style="color: #28a745;">✓ Found: ${track.localFilePath || 'Added to M3U'}</small>
+                        ${track.matchScore ? `<br><small style="color: #666;">Match Score: ${(track.matchScore * 100).toFixed(1)}%</small>` : ''}
+                    </div>
+                    `).join('')}
+                </div>
+            </div>
         </div>
-    </div>
-`;
-    });
+        `).join('')}
+    </div>`;
+    }
+
+    // All Unmatched Tracks Section
+    const allUnmatchedTracks = results.filter(r => r.unmatchedTracks.length > 0);
+    if (allUnmatchedTracks.length > 0) {
+      html += `
+    <div class="playlist-section">
+        <h2 class="warning">⚠️ All Unmatched Tracks (${results.reduce((sum, r) => sum + r.unmatchedTracks.length, 0)} total)</h2>
+        ${allUnmatchedTracks.map((result, playlistIndex) => `
+        <div class="playlist">
+            <div class="playlist-header warning">
+                <span class="serial-number">${playlistIndex + 1}.</span>${result.playlistName} (${result.unmatchedTracks.length} unmatched)
+            </div>
+            <div class="playlist-content">
+                <div class="track-list">
+                    ${result.unmatchedTracks.map((track, trackIndex) => `
+                    <div class="track" style="background: #fff8e1; border-left: 3px solid #ffc107;">
+                        <span class="serial-number">${trackIndex + 1}.</span>
+                        <strong>${track.spotifyTrack.artists.map((a: any) => a.name).join(', ')} - ${track.spotifyTrack.name}</strong>
+                        <br><small style="color: #666;">Expected filename: ${track.expectedFilename || 'N/A'}</small>
+                        <br><small><a href="${track.spotifyUrl || '#'}" target="_blank" style="color: #1db954;">🎵 Listen on Spotify</a></small>
+                    </div>
+                    `).join('')}
+                </div>
+            </div>
+        </div>
+        `).join('')}
+    </div>`;
+    }
 
     html += `
 </body>
