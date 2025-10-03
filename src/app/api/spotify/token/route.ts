@@ -28,24 +28,12 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Load configuration to get client secret
+    // Load configuration to validate client ID
     const configPath = path.join(process.cwd(), 'data', 'config.json');
-    let clientSecret: string;
     
     try {
       const configData = await fs.readFile(configPath, 'utf8');
       const config = JSON.parse(configData);
-      clientSecret = config.spotifyClientSecret;
-      
-      if (!clientSecret) {
-        return NextResponse.json(
-          { 
-            error: 'Client secret not configured',
-            message: 'Please configure Spotify Client Secret in the application settings'
-          },
-          { status: 400 }
-        );
-      }
       
       // Validate that the clientId matches configuration
       if (config.spotifyClientId !== clientId) {
@@ -58,20 +46,20 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         { 
           error: 'Configuration not found',
-          message: 'Please configure Spotify credentials first'
+          message: 'Please configure Spotify Client ID first'
         },
         { status: 400 }
       );
     }
 
-    // Exchange authorization code for tokens
+    // Exchange authorization code for tokens using PKCE (no client secret needed)
     const tokenResponse = await fetch('https://accounts.spotify.com/api/token', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
-        'Authorization': `Basic ${Buffer.from(`${clientId}:${clientSecret}`).toString('base64')}`,
       },
       body: new URLSearchParams({
+        client_id: clientId,
         grant_type: 'authorization_code',
         code: code,
         redirect_uri: redirectUri,

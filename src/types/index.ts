@@ -7,7 +7,6 @@ export interface MatchingConfig {
 
 export interface AppConfig {
   spotifyClientId: string;
-  spotifyClientSecret: string;
   redirectUri: string;
   timeoutMs: number;
   baseMusicFolder: string;

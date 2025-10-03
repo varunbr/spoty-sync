@@ -19,7 +19,6 @@ const ConfigDialog: React.FC<ConfigDialogProps> = ({
 }) => {
   const [formData, setFormData] = useState<AppConfig>({
     spotifyClientId: '',
-    spotifyClientSecret: '',
     redirectUri: 'http://127.0.0.1:3000/callback',
     timeoutMs: 60000,
     baseMusicFolder: '',
@@ -45,10 +44,6 @@ const ConfigDialog: React.FC<ConfigDialogProps> = ({
 
     if (!formData.spotifyClientId.trim()) {
       newErrors.spotifyClientId = 'Spotify Client ID is required';
-    }
-
-    if (!formData.spotifyClientSecret.trim()) {
-      newErrors.spotifyClientSecret = 'Spotify Client Secret is required';
     }
 
     if (!formData.redirectUri.trim()) {
@@ -144,33 +139,7 @@ const ConfigDialog: React.FC<ConfigDialogProps> = ({
               className="text-blue-600 hover:underline"
             >
               Spotify Developer Dashboard
-            </a>
-          </p>
-        </div>
-
-        {/* Spotify Client Secret */}
-        <div>
-          <Label htmlFor="spotifyClientSecret">Spotify Client Secret</Label>
-          <Input
-            id="spotifyClientSecret"
-            type="password"
-            value={formData.spotifyClientSecret}
-            onChange={(e) => handleInputChange('spotifyClientSecret', e.target.value)}
-            placeholder="Your Spotify App Client Secret"
-            className={errors.spotifyClientSecret ? 'border-red-500' : ''}
-          />
-          {errors.spotifyClientSecret && (
-            <p className="mt-1 text-sm text-red-600">{errors.spotifyClientSecret}</p>
-          )}
-          <p className="mt-1 text-sm text-gray-500">
-            Get this from your <a 
-              href="https://developer.spotify.com/dashboard" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="text-blue-600 hover:underline"
-            >
-              Spotify Developer Dashboard
-            </a>
+            </a>. No client secret needed - this app uses PKCE authentication.
           </p>
         </div>
 

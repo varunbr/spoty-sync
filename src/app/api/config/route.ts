@@ -13,7 +13,6 @@ const DEFAULT_MATCHING_CONFIG: MatchingConfig = {
 
 const DEFAULT_CONFIG: AppConfig = {
   spotifyClientId: '',
-  spotifyClientSecret: '',
   redirectUri: 'http://127.0.0.1:3000/callback',
   timeoutMs: 60000,
   baseMusicFolder: '',
@@ -89,13 +88,6 @@ function validateConfig(config: AppConfig): ValidationError[] {
     errors.push({
       field: 'spotifyClientId',
       message: 'Spotify Client ID is required'
-    });
-  }
-
-  if (!config.spotifyClientSecret || config.spotifyClientSecret.trim() === '') {
-    errors.push({
-      field: 'spotifyClientSecret',
-      message: 'Spotify Client Secret is required'
     });
   }
   
