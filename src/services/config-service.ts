@@ -148,7 +148,7 @@ class ConfigService {
     }
 
     if (!mapping.languageFolderName?.trim()) {
-      errors.push('Language folder name is required');
+      errors.push('Folder name is required');
     }
 
     if (!mapping.m3uFileName?.trim()) {

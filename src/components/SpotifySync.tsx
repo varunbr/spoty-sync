@@ -247,6 +247,45 @@ const SpotifySync: React.FC = () => {
         currentStep: 'Sync completed',
         progress: 100
       });
+
+      // Update all mappings with lastSync timestamp and track counts
+      const currentTime = new Date();
+      const updatedMappings = mappings.map(mapping => {
+        const syncResult = results.find(r => r.playlistId === mapping.spotifyPlaylistId);
+        const matchedCount = syncResult?.matchedTracks || 0;
+        const unmatchedCount = syncResult?.unmatchedTracks.length || 0;
+        const totalTracks = matchedCount + unmatchedCount;
+        const matchedPercentage = totalTracks > 0 ? (matchedCount / totalTracks) * 100 : 0;
+        
+        return {
+          ...mapping, 
+          lastSync: currentTime,
+          matchedCount: matchedCount,
+          unmatchedCount: unmatchedCount,
+          matchedPercentage: matchedPercentage
+        };
+      });
+      
+      try {
+        // Update all mappings in parallel
+        await Promise.all(
+          updatedMappings.map(mapping =>
+            fetch('/api/mappings', {
+              method: 'PUT',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(mapping),
+            })
+          )
+        );
+
+        // Update local state with the new lastSync timestamps and track counts
+        setMappings(updatedMappings);
+      } catch (error) {
+        console.warn('Failed to update last sync times:', error);
+        // Don't fail the sync if we can't update the timestamps
+      }
     } catch (error) {
       console.error('Sync failed:', error);
       setError(`Sync failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
@@ -295,6 +334,38 @@ const SpotifySync: React.FC = () => {
         currentStep: 'Sync completed',
         progress: 100
       });
+
+      // Update the mapping with lastSync timestamp and track counts
+      const totalTracks = result.matchedTracks + result.unmatchedTracks.length;
+      const matchedPercentage = totalTracks > 0 ? (result.matchedTracks / totalTracks) * 100 : 0;
+      
+      const updatedMapping = { 
+        ...mapping, 
+        lastSync: new Date(),
+        matchedCount: result.matchedTracks,
+        unmatchedCount: result.unmatchedTracks.length,
+        matchedPercentage: matchedPercentage
+      };
+      
+      try {
+        await fetch('/api/mappings', {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(updatedMapping),
+        });
+
+        // Update local state with the new lastSync timestamp and track counts
+        setMappings(prev => prev.map(m => 
+          m.spotifyPlaylistId === mapping.spotifyPlaylistId 
+            ? updatedMapping 
+            : m
+        ));
+      } catch (error) {
+        console.warn('Failed to update last sync time:', error);
+        // Don't fail the sync if we can't update the timestamp
+      }
     } catch (error) {
       console.error('Sync failed:', error);
       setError(`Sync failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
@@ -326,7 +397,7 @@ const SpotifySync: React.FC = () => {
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <header className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
               <Music className="h-8 w-8 text-green-600 mr-3" />
@@ -372,7 +443,7 @@ const SpotifySync: React.FC = () => {
       </header>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="max-w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Error Alert */}
         {error && (
           <div className="mb-6 bg-red-50 border border-red-200 rounded-md p-4">
@@ -415,7 +486,7 @@ const SpotifySync: React.FC = () => {
         </div>
 
         {/* Mappings Table */}
-        <div className="bg-white shadow rounded-lg">
+        <div className="bg-white shadow rounded-lg overflow-hidden">
           <MappingsTable
             mappings={mappings}
             onDelete={handleDeleteMapping}

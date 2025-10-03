@@ -19,6 +19,10 @@ export interface PlaylistMapping {
   spotifyPlaylistName: string;
   languageFolderName: string;
   m3uFileName: string;
+  lastSync?: Date;
+  matchedCount?: number;
+  unmatchedCount?: number;
+  matchedPercentage?: number;
 }
 
 // Spotify API Types

@@ -76,6 +76,55 @@ export async function POST(request: NextRequest) {
   }
 }
 
+export async function PUT(request: NextRequest) {
+  try {
+    const updatedMapping: PlaylistMapping = await request.json();
+    
+    // Validate the mapping
+    const validationErrors = validateMapping(updatedMapping);
+    if (validationErrors.length > 0) {
+      return NextResponse.json(
+        { error: 'Validation failed', errors: validationErrors },
+        { status: 400 }
+      );
+    }
+    
+    await ensureDataDirectory();
+    
+    // Read existing mappings
+    let mappings: PlaylistMapping[] = [];
+    try {
+      const mappingsData = await fs.readFile(MAPPINGS_FILE_PATH, 'utf8');
+      mappings = JSON.parse(mappingsData);
+    } catch (error) {
+      // No mappings file exists
+      mappings = [];
+    }
+    
+    // Find and update the mapping
+    const mappingIndex = mappings.findIndex(m => m.spotifyPlaylistId === updatedMapping.spotifyPlaylistId);
+    if (mappingIndex !== -1) {
+      mappings[mappingIndex] = updatedMapping;
+    } else {
+      return NextResponse.json(
+        { error: 'Mapping not found' },
+        { status: 404 }
+      );
+    }
+    
+    // Write back to file
+    await fs.writeFile(MAPPINGS_FILE_PATH, JSON.stringify(mappings, null, 2), 'utf8');
+    
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error('Error updating mapping:', error);
+    return NextResponse.json(
+      { error: 'Failed to update mapping' },
+      { status: 500 }
+    );
+  }
+}
+
 export async function DELETE(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
@@ -141,7 +190,7 @@ function validateMapping(mapping: PlaylistMapping): ValidationError[] {
   if (!mapping.languageFolderName || mapping.languageFolderName.trim() === '') {
     errors.push({
       field: 'languageFolderName',
-      message: 'Language folder name is required'
+      message: 'Folder name is required'
     });
   }
   
