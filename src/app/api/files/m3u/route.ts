@@ -79,7 +79,6 @@ export async function PUT(request: NextRequest) {
         existingContent = await fs.readFile(filePath, 'utf8');
       } catch (error) {
         // File doesn't exist, will create new one
-        console.log('M3U file does not exist, creating new one');
       }
 
       // Merge existing and new content

@@ -22,10 +22,8 @@ class SpotifyAuth {
   }
 
   configure(clientId: string, redirectUri: string) {
-    console.log('SpotifyAuth.configure called with:', { clientId, redirectUri });
     this.clientId = clientId;
     this.redirectUri = redirectUri;
-    console.log('SpotifyAuth configured - this.clientId:', this.clientId, 'this.redirectUri:', this.redirectUri);
   }
 
   /**
@@ -117,9 +115,6 @@ class SpotifyAuth {
     const storedState = localStorage.getItem('spotify_state');
     const storedCodeVerifier = localStorage.getItem('spotify_code_verifier');
 
-    console.log('handleCallback - code:', !!code, 'state:', state, 'storedState:', storedState, 'storedCodeVerifier:', !!storedCodeVerifier);
-    console.log('Auth service config - clientId:', this.clientId, 'redirectUri:', this.redirectUri);
-
     if (!storedState || state !== storedState) {
       throw new Error('Invalid state parameter');
     }
@@ -152,9 +147,6 @@ class SpotifyAuth {
       redirectUri: this.redirectUri,
       clientId: this.clientId,
     };
-    
-    console.log('Sending token exchange request:', requestPayload);
-    console.log('Auth service state - clientId:', this.clientId, 'redirectUri:', this.redirectUri);
     
     const response = await fetch('/api/spotify/token', {
       method: 'POST',

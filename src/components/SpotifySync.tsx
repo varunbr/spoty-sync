@@ -60,14 +60,10 @@ const SpotifySync: React.FC = () => {
       window.history.replaceState({}, document.title, window.location.pathname);
     } else if (authSuccess && code && state) {
       // Ensure SpotifyAuth is configured before processing callback
-      console.log('OAuth callback - config:', config);
-      console.log('OAuth callback - clientId:', config.spotifyClientId, 'redirectUri:', config.redirectUri);
       if (config.spotifyClientId && config.redirectUri) {
-        console.log('Configuring SpotifyAuth with:', config.spotifyClientId, config.redirectUri);
         spotifyAuth.configure(config.spotifyClientId, config.redirectUri);
         handleOAuthCallback(code, state);
       } else {
-        console.log('Missing Spotify configuration');
         setError('Spotify configuration not found. Please configure your Spotify app credentials.');
       }
     }

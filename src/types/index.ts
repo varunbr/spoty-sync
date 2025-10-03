@@ -131,28 +131,12 @@ export interface SyncResult {
   syncedAt: Date;
 }
 
-export interface DirectoryStructure {
-  folderName: string;
-  path: string;
-  mp3Count: number;
-  subFolders: DirectoryStructure[];
-}
-
 // UI State Types
 export interface SyncProgress {
   isProcessing: boolean;
   currentStep: string;
   progress: number;
   error?: string;
-}
-
-export interface AppState {
-  config: AppConfig | null;
-  auth: AuthState;
-  playlists: SpotifyPlaylist[];
-  mappings: PlaylistMapping[];
-  syncProgress: SyncProgress;
-  lastSyncResults: SyncResult[];
 }
 
 // Error Types
@@ -168,20 +152,3 @@ export interface ValidationError {
   message: string;
 }
 
-// Component Props Types
-export interface ModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  title: string;
-  children: React.ReactNode;
-}
-
-export interface DataTableColumn<T> {
-  key: keyof T;
-  header: string;
-  render?: (value: any, row: T) => React.ReactNode;
-}
-
-// Utility Types
-export type SyncStatus = 'idle' | 'syncing' | 'success' | 'error';
-export type AuthStatus = 'unauthenticated' | 'authenticating' | 'authenticated' | 'error';

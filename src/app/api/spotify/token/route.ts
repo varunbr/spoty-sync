@@ -5,8 +5,6 @@ import path from 'path';
 export async function POST(request: NextRequest) {
   try {
     const requestBody = await request.json();
-    console.log('Token exchange request body:', requestBody);
-    
     const { code, codeVerifier, redirectUri, clientId } = requestBody;
 
     // Validate required parameters
@@ -17,8 +15,6 @@ export async function POST(request: NextRequest) {
     if (!clientId) missingParams.push('clientId');
     
     if (missingParams.length > 0) {
-      console.log('Missing parameters:', missingParams);
-      console.log('Received values - code:', !!code, 'codeVerifier:', !!codeVerifier, 'redirectUri:', redirectUri, 'clientId:', clientId);
       return NextResponse.json(
         { 
           error: `Missing required parameters: ${missingParams.join(', ')}`,
