@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Settings, Music, Plus, RefreshCw, CheckCircle, AlertCircle } from 'lucide-react';
+import { Settings, Music, Plus, RefreshCw, CheckCircle, AlertCircle, FolderPlus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Modal } from '@/components/ui/modal';
 import { AppConfig, PlaylistMapping, AuthState, SyncResult, SyncProgress } from '@/types';
@@ -12,6 +12,7 @@ import ConfigDialog from './ConfigDialog';
 import AddMappingDialog from './AddMappingDialog';
 import MappingsTable from './MappingsTable';
 import SyncProgressModal from './SyncProgressModal';
+import { PlaylistGenerationModal } from './PlaylistGenerationModal';
 import SyncService from '@/services/sync-service';
 
 const SpotifySync: React.FC = () => {
@@ -26,6 +27,7 @@ const SpotifySync: React.FC = () => {
   const [showConfigDialog, setShowConfigDialog] = useState(false);
   const [showAddMappingDialog, setShowAddMappingDialog] = useState(false);
   const [showSyncProgress, setShowSyncProgress] = useState(false);
+  const [showPlaylistGeneration, setShowPlaylistGeneration] = useState(false);
   
   // Sync states
   const [syncProgress, setSyncProgress] = useState<SyncProgress>({
@@ -401,7 +403,7 @@ const SpotifySync: React.FC = () => {
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
               <Music className="h-8 w-8 text-green-600 mr-3" />
-              <h1 className="text-xl font-semibold text-gray-900">Spotify Sync</h1>
+                            <h1 className="text-3xl font-bold text-gray-900">Spotify Sync</h1>
             </div>
             
             <div className="flex items-center space-x-4">
@@ -420,7 +422,7 @@ const SpotifySync: React.FC = () => {
                 ) : (
                   <>
                     <AlertCircle className="h-5 w-5 text-yellow-500" />
-                    <span className="text-sm text-gray-700">Not connected</span>
+                    <span className="text-sm font-medium text-gray-900">Not connected</span>
                     <Button size="sm" onClick={handleLogin}>
                       Connect Spotify
                     </Button>
@@ -465,7 +467,7 @@ const SpotifySync: React.FC = () => {
 
         {/* Action Bar */}
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-lg font-medium text-gray-900">Playlist Mappings</h2>
+          <h2 className="text-xl font-bold text-gray-900">Playlist Mappings</h2>
           <div className="flex space-x-3">
             <Button
               variant="outline"
@@ -474,6 +476,14 @@ const SpotifySync: React.FC = () => {
             >
               <RefreshCw className="h-4 w-4 mr-2" />
               Sync All
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => setShowPlaylistGeneration(true)}
+              disabled={!config?.baseMusicFolder || syncProgress.isProcessing}
+            >
+              <FolderPlus className="h-4 w-4 mr-2" />
+              Generate Playlists
             </Button>
             <Button
               onClick={() => setShowAddMappingDialog(true)}
@@ -550,6 +560,15 @@ const SpotifySync: React.FC = () => {
         progress={syncProgress.progress}
         results={syncResults}
         onDownloadReport={handleDownloadReport}
+      />
+
+      <PlaylistGenerationModal
+        isOpen={showPlaylistGeneration}
+        onClose={() => setShowPlaylistGeneration(false)}
+        onSuccess={() => {
+          // Optionally refresh mappings or show success message
+          console.log('Playlists generated successfully');
+        }}
       />
     </div>
   );

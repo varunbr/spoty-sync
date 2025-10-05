@@ -11,14 +11,14 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     return (
       <button
         className={cn(
-          'inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50',
+          'inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-60 disabled:cursor-not-allowed',
           {
-            'bg-primary text-primary-foreground shadow hover:bg-primary/90': variant === 'default',
-            'bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90': variant === 'destructive',
-            'border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground': variant === 'outline',
-            'bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80': variant === 'secondary',
-            'hover:bg-accent hover:text-accent-foreground': variant === 'ghost',
-            'text-primary underline-offset-4 hover:underline': variant === 'link',
+            'bg-blue-600 text-white shadow hover:bg-blue-700 focus:ring-blue-500': variant === 'default',
+            'bg-red-600 text-white shadow-sm hover:bg-red-700 focus:ring-red-500': variant === 'destructive',
+            'border border-gray-300 bg-white text-gray-900 shadow-sm hover:bg-gray-50 focus:ring-blue-500': variant === 'outline',
+            'bg-gray-100 text-gray-900 shadow-sm hover:bg-gray-200 focus:ring-gray-500': variant === 'secondary',
+            'text-gray-900 hover:bg-gray-100 focus:ring-gray-500': variant === 'ghost',
+            'text-blue-600 underline-offset-4 hover:underline focus:ring-blue-500': variant === 'link',
           },
           {
             'h-9 px-4 py-2': size === 'default',

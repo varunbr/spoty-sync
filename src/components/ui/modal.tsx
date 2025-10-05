@@ -25,7 +25,7 @@ export function Modal({ isOpen, onClose, title, children, maxWidth = 'max-w-2xl'
       <div className={`relative bg-white ${maxWidth.includes('7xl') ? 'rounded-lg m-4 h-[96vh]' : 'rounded-lg shadow-xl mx-4 max-h-[90vh]'} ${maxWidth} w-full flex flex-col overflow-hidden`}>        
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b bg-white flex-shrink-0">
-          <h2 className="text-lg font-semibold">{title}</h2>
+          <h2 className="text-xl font-bold text-gray-900">{title}</h2>
           <Button
             variant="ghost"
             size="icon"

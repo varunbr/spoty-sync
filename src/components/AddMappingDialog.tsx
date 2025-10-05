@@ -195,7 +195,7 @@ const AddMappingDialog: React.FC<AddMappingDialogProps> = ({
             <Search className="h-4 w-4" />
           </Button>
         </div>
-        <p className="text-xs text-gray-500 mt-1">
+        <p className="text-xs text-gray-700 mt-1">
           Example: https://open.spotify.com/playlist/37i9dQZF1DX0XUsuxWHRQd
         </p>
       </div>
@@ -225,7 +225,7 @@ const AddMappingDialog: React.FC<AddMappingDialogProps> = ({
                   </div>
                   <div>
                     <p className="text-sm font-medium text-gray-900">{playlist.name}</p>
-                    <p className="text-sm text-gray-500">{playlist.tracks.total} tracks • {playlist.owner.display_name}</p>
+                    <p className="text-sm text-gray-700">{playlist.tracks.total} tracks • {playlist.owner.display_name}</p>
                   </div>
                 </div>
               </div>
@@ -259,7 +259,7 @@ const AddMappingDialog: React.FC<AddMappingDialogProps> = ({
                   </div>
                   <div>
                     <p className="text-sm font-medium text-gray-900">{playlist.name}</p>
-                    <p className="text-sm text-gray-500">{playlist.tracks.total} tracks</p>
+                    <p className="text-sm text-gray-700">{playlist.tracks.total} tracks</p>
                   </div>
                 </div>
               </div>
@@ -276,7 +276,7 @@ const AddMappingDialog: React.FC<AddMappingDialogProps> = ({
         <h3 className="text-sm font-medium text-gray-900 mb-3">
           Select Music Folder for "{selectedPlaylist?.name}"
         </h3>
-        <p className="text-sm text-gray-500 mb-4">
+        <p className="text-sm text-gray-700 mb-4">
           Choose the folder containing MP3 files for this playlist
         </p>
       </div>
@@ -293,14 +293,14 @@ const AddMappingDialog: React.FC<AddMappingDialogProps> = ({
                 <Folder className="h-8 w-8 text-yellow-500" />
                 <div>
                   <p className="text-sm font-medium text-gray-900">{folder.name}</p>
-                  <p className="text-sm text-gray-500">{folder.mp3Count} MP3 files</p>
+                  <p className="text-sm text-gray-700">{folder.mp3Count} MP3 files</p>
                 </div>
               </div>
             </div>
           ))}
         </div>
       ) : (
-        <div className="text-center py-8 text-gray-500">
+        <div className="text-center py-8 text-gray-700">
           No folders found in your base music directory.
         </div>
       )}
@@ -324,7 +324,7 @@ const AddMappingDialog: React.FC<AddMappingDialogProps> = ({
         <Label>Selected Playlist</Label>
         <div className="mt-1 p-3 bg-gray-50 rounded-lg">
           <p className="text-sm font-medium">{selectedPlaylist?.name}</p>
-          <p className="text-sm text-gray-500">{selectedPlaylist?.tracks.total} tracks</p>
+          <p className="text-sm text-gray-700">{selectedPlaylist?.tracks.total} tracks</p>
         </div>
       </div>
 
@@ -333,7 +333,7 @@ const AddMappingDialog: React.FC<AddMappingDialogProps> = ({
         <Label>Selected Folder</Label>
         <div className="mt-1 p-3 bg-gray-50 rounded-lg">
           <p className="text-sm font-medium">{selectedFolder?.name}</p>
-          <p className="text-sm text-gray-500">{selectedFolder?.mp3Count} MP3 files</p>
+          <p className="text-sm text-gray-700">{selectedFolder?.mp3Count} MP3 files</p>
         </div>
       </div>
 
@@ -347,7 +347,7 @@ const AddMappingDialog: React.FC<AddMappingDialogProps> = ({
           onChange={(e) => setM3uFileName(e.target.value)}
           placeholder="playlist.m3u"
         />
-        <p className="mt-1 text-sm text-gray-500">
+        <p className="mt-1 text-sm text-gray-700">
           The M3U playlist file will be created in your base music folder
         </p>
       </div>

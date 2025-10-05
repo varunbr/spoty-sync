@@ -131,12 +131,12 @@ const ConfigDialog: React.FC<ConfigDialogProps> = ({
           {errors.spotifyClientId && (
             <p className="mt-1 text-sm text-red-600">{errors.spotifyClientId}</p>
           )}
-          <p className="mt-1 text-sm text-gray-500">
+          <p className="mt-1 text-sm text-gray-700">
             Get this from your <a 
               href="https://developer.spotify.com/dashboard" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="text-blue-600 hover:underline"
+              className="text-blue-600 hover:underline font-medium"
             >
               Spotify Developer Dashboard
             </a>. No client secret needed - this app uses PKCE authentication.
@@ -157,7 +157,7 @@ const ConfigDialog: React.FC<ConfigDialogProps> = ({
           {errors.redirectUri && (
             <p className="mt-1 text-sm text-red-600">{errors.redirectUri}</p>
           )}
-          <p className="mt-1 text-sm text-gray-500">
+          <p className="mt-1 text-sm text-gray-700">
             Make sure this matches your Spotify app settings
           </p>
         </div>
@@ -185,7 +185,7 @@ const ConfigDialog: React.FC<ConfigDialogProps> = ({
           {errors.baseMusicFolder && (
             <p className="mt-1 text-sm text-red-600">{errors.baseMusicFolder}</p>
           )}
-          <p className="mt-1 text-sm text-gray-500">
+          <p className="mt-1 text-sm text-gray-700">
             Root folder containing all your music directories
           </p>
         </div>
@@ -206,7 +206,7 @@ const ConfigDialog: React.FC<ConfigDialogProps> = ({
           {errors.timeoutMs && (
             <p className="mt-1 text-sm text-red-600">{errors.timeoutMs}</p>
           )}
-          <p className="mt-1 text-sm text-gray-500">
+          <p className="mt-1 text-sm text-gray-700">
             Timeout for API requests (1000-300000 ms)
           </p>
         </div>
@@ -228,7 +228,7 @@ const ConfigDialog: React.FC<ConfigDialogProps> = ({
                 className="rounded border-gray-300"
               />
               <span className="ml-2 text-sm text-gray-900">Case sensitive matching</span>
-              <span className="ml-2 text-xs text-gray-500">(recommended: OFF for better matches)</span>
+              <span className="ml-2 text-xs text-gray-600 font-medium">(recommended: OFF for better matches)</span>
             </label>
 
             {/* Remove Special Characters */}
@@ -243,7 +243,7 @@ const ConfigDialog: React.FC<ConfigDialogProps> = ({
                 className="rounded border-gray-300"
               />
               <span className="ml-2 text-sm text-gray-900">Remove special characters</span>
-              <span className="ml-2 text-xs text-gray-500">(recommended: ON to ignore punctuation)</span>
+              <span className="ml-2 text-xs text-gray-600 font-medium">(recommended: ON to ignore punctuation)</span>
             </label>
 
             {/* Normalize Whitespace */}
@@ -258,7 +258,7 @@ const ConfigDialog: React.FC<ConfigDialogProps> = ({
                 className="rounded border-gray-300"
               />
               <span className="ml-2 text-sm text-gray-900">Normalize whitespace</span>
-              <span className="ml-2 text-xs text-gray-500">(recommended: ON to clean up spacing)</span>
+              <span className="ml-2 text-xs text-gray-600 font-medium">(recommended: ON to clean up spacing)</span>
             </label>
           </div>
           
